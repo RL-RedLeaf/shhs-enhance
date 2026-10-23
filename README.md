@@ -14,14 +14,16 @@
 ## 本地开发
 
 ```
-cd web
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:5173（仅本机）
+npm run dev:lan    # 同时监听局域网，手机可用 http://<本机IP>:5173 访问
 ```
 
+- `npm run dev` 默认只绑 `127.0.0.1`，局域网内其他设备（含手机）无法访问；真机调试请用 `dev:lan`（等价于 `vite --host`）。
 - dev 服务器把 `/api` 代理到 `https://shhspost.cn`，公开 GET（metadata / routes / announcements）直读线上真实数据。
 - **dev 环境写接口（登录、改密、反馈提交、管理端写操作）会被服务器边缘的源校验拦截（403），属预期**——完整写流程需部署到你自己的测试环境后再验证。
 - 本地访问登录页用 `/login.html`（生产对应 `/login`，由服务器路由表分发）。
+- 注意：二维码内容取自 `location.origin`，用局域网 IP 访问时生成的是 `http://<本机IP>:5173/?route=…`，扫码后手机打不开属正常现象。
 
 ## 构建与部署
 
