@@ -62,29 +62,6 @@ npm run build      # 产出 dist/
 
 若联调时字段名不符，只需调整 `src/pages/AdminAccounts.tsx` 中这两个函数。
 
-## 回归验证（只读，零写操作）
-
-```
-pip install playwright      # 一次性
-python qa.py                # 默认 5173，可加 --port 指定
-```
-
-`qa.py` 会自己拉起 dev server（端口已占用则复用），跑完自动关掉，不需要另外开终端。
-
-它不是前端运行时的一部分，只是开发期的可视化回归工具：用 Playwright 驱动系统自带 Edge（headless，零浏览器内核下载）跑 8 个场景并截图到 `_qa/`（该目录不入库）：
-
-| 截图 | 场景 |
-| --- | --- |
-| 01-home-default.png | 首页初始空态（URL 保持 `/`，不自动载默认邮路） |
-| 01c-announcement-open.png | 系统公告折叠：点开「置顶 · 鸣谢 Acknowledgements」 |
-| 01b-home-qr.png | 深链 `?route=R1` 展开二维码（`SH26-001 · R1`） |
-| 02-home-route-link.png | 邮路直链 `?route=R500`（SH26-500） |
-| 03-home-pair-virtual.png | 学校对查询——虚拟邮路（交大附中→复旦附中，无二维码入口） |
-| 03b-home-pair-materialized.png | 学校对查询——已实体化（华曜浦东→鲁迅中学，R500） |
-| 04-home-notfound.png | 未找到态（`?route=R99999`） |
-| 05-login.png | 登录页 |
-| 06-login-validation.png | 登录空表单校验态 |
-
 ## 后续优化空间
 
 - antd 共享 chunk 约 300KB gzip（Table/Form/Modal 依赖的必然开销）；如需瘦身可按入口拆分或改 pure-component 按需引入。

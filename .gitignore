@@ -7,8 +7,11 @@ dist/
 dist-ssr/
 *.local
 
-# QA 截图（由 `python qa.py` 重新生成，不入库）
+# QA 截图（由本地截图脚本生成，不入库）
 _qa/
+
+# 本地验证工具（仅本地使用，不发布）
+qa.py
 
 # 日志
 *.log
