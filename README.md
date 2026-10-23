@@ -65,12 +65,13 @@ npm run build      # 产出 dist/
 ## 回归验证（只读，零写操作）
 
 ```
-python C:\Users\guyuh\.agents\skills\webapp-testing\scripts\with_server.py `
-  --server "npm run dev -- --port 5173" --port 5173 --timeout 60 `
-  -- python qa.py
+pip install playwright      # 一次性
+python qa.py                # 默认 5173，可加 --port 指定
 ```
 
-`qa.py` 用系统自带 Edge（headless，零浏览器下载）跑 8 个场景并截图到 `_qa/`：
+`qa.py` 会自己拉起 dev server（端口已占用则复用），跑完自动关掉，不需要另外开终端。
+
+它不是前端运行时的一部分，只是开发期的可视化回归工具：用 Playwright 驱动系统自带 Edge（headless，零浏览器内核下载）跑 8 个场景并截图到 `_qa/`（该目录不入库）：
 
 | 截图 | 场景 |
 | --- | --- |
@@ -87,7 +88,8 @@ python C:\Users\guyuh\.agents\skills\webapp-testing\scripts\with_server.py `
 ## 后续优化空间
 
 - antd 共享 chunk 约 300KB gzip（Table/Form/Modal 依赖的必然开销）；如需瘦身可按入口拆分或改 pure-component 按需引入。
-- 工作台（方向表单、节点候选、操作预览/提交、事实登记）在下一批次迁移，API 契约见同工作区上级目录的 `_research/api.md`（不随本仓库分发）。
+- 工作台（方向表单、节点候选、操作预览/提交、事实登记）在下一批次迁移，接口契约见 `src/lib/api.ts` 与 `src/lib/types.ts` 中的既有建模。
+
 
 ## 许可
 

@@ -1,7 +1,7 @@
 import type { ThemeConfig } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 
-// 设计 token 全部来自原站手写 CSS（_probe/style-BV4c9Wvh.css），逐值映射进 antd。
+// 设计 token 逐值取自原站手写 CSS，映射进 antd theme。
 export const antdTheme: ThemeConfig = {
   token: {
     colorPrimary: '#164d3d',
