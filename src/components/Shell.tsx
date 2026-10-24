@@ -77,7 +77,6 @@ export function NoticeBar({ items }: { items: Announcement[] }) {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="nbar-pin">{first.pinned ? '置顶' : '公告'}</span>
         <span className="nbar-t">
           <b>系统公告</b>
           <span>{first.title || '（无标题）'}</span>
