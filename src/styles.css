@@ -115,36 +115,37 @@ body { margin: 0; background: #fff; color: var(--ink); }
 /* ── 摘要 ── */
 .sum { padding: 18px 22px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 22px; }
 .sum-l { min-width: 0; }
-.sum .pair { font-size: 17px; font-weight: 600; line-height: 1.4; margin: 0 0 4px; }
-.sum .pair i { font-style: normal; color: var(--ink-3); font-weight: 400; margin: 0 8px; }
-.sum .meta { font-size: 12px; color: var(--ink-3); margin: 0 0 14px; font-variant-numeric: tabular-nums; }
-.sum .meta b { font-family: var(--num); font-weight: 600; color: var(--ink-2); letter-spacing: .02em; }
-.sum .k { font-size: 11.5px; color: var(--ink-3); margin: 0 0 3px; }
+/* 顶部元信息：编号左、进度右，两端对齐成一条横线 */
+.sum-top { display: flex; align-items: baseline; margin: 0 0 6px; }
+.sum-top .code {
+  font-family: var(--num); font-size: 11px; letter-spacing: .08em; color: var(--ink-3);
+}
+.sum-top .count {
+  margin-left: auto; font-family: var(--num); font-size: 11px; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.sum-top .count b { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+
+/* 路线：常规字重，只做说明；状态才是主角 */
+.sum .pair { font-size: 13px; font-weight: 400; line-height: 1.45; color: var(--ink-2); margin: 0 0 12px; }
+.sum .pair i { font-style: normal; color: var(--ink-3); margin: 0 5px; }
 .sum .st {
-  font-size: 21px; font-weight: 600; line-height: 1.35; color: var(--green);
+  font-size: 19px; font-weight: 600; line-height: 1.3; color: var(--green);
   margin: 0 0 3px; overflow-wrap: anywhere;
 }
-.sum .st-sub { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; }
+.sum .st-sub { font-size: 12px; color: var(--ink-3); margin: 0 0 10px; }
 
-/* 状态行：大字 + 右侧「下一步」 */
-.st-row { display: flex; align-items: baseline; gap: 16px; }
-.st-row .st { flex: 1 1 auto; min-width: 0; }
-.st-row .nx {
-  flex: 0 0 auto; font-size: 12px; color: var(--ink-3); white-space: nowrap;
-  text-align: right;
-}
-.st-row .nx b { color: var(--ink-2); font-weight: 500; }
-
-/* 进度行：细条在左，2/6 靠右 */
-.prog { display: flex; align-items: center; gap: 12px; }
-.prog .bar { display: flex; gap: 3px; flex: 0 0 300px; max-width: 300px; }
+/* 进度条：独占一行，铺满 */
+.prog { display: flex; align-items: center; }
+.prog .bar { display: flex; gap: 3px; flex: 1; }
 .prog .bar i { flex: 1; height: 4px; background: #e9edea; border-radius: 1px; }
 .prog .bar i.on { background: var(--green); }
-.prog .n {
-  margin-left: auto; font-family: var(--num); font-size: 12.5px; color: var(--ink-3);
-  white-space: nowrap; font-variant-numeric: tabular-nums;
+
+@media (min-width: 720px) {
+  .sum .pair { font-size: 16px; margin-bottom: 14px; }
+  .sum .st { font-size: 22px; }
+  .sum .st-sub { font-size: 12.5px; margin-bottom: 16px; }
 }
-.prog .n b { color: var(--ink-2); font-weight: 600; }
 
 .qrb { text-align: center; padding-top: 2px; }
 .qrb img { display: block; border: 1px solid var(--line); border-radius: 2px; }
@@ -222,6 +223,15 @@ body { margin: 0; background: #fff; color: var(--ink); }
 }
 
 .empty-tx { color: var(--ink-3); font-size: 12.5px; }
+
+/* 时间线折叠：还有 N 站 */
+.tl-more {
+  display: block; width: calc(100% - 44px); margin: 2px 22px 10px; padding: 10px 0;
+  border: 0; background: transparent; text-align: center;
+  font-size: 12.5px; color: var(--ink-3); cursor: pointer;
+}
+.tl-more b { color: var(--ink-2); font-weight: 500; }
+.tl-more:hover { color: var(--green); }
 
 /* ── 反馈提示条 ── */
 .fb-line {
@@ -320,7 +330,6 @@ body { margin: 0; background: #fff; color: var(--ink); }
 }
 
 /* 移动端公告卡：默认隐藏，窄屏显示 */
-.m-notice { display: none; }
 
 /* 移动端二维码行（窄屏时摘要右上角的二维码被隐藏，改到底部横排） */
 .m-qr { display: none; }
@@ -404,7 +413,15 @@ body { margin: 0; background: #fff; color: var(--ink); }
 
   /* 移动端查询卡不吸顶：滚动时让它随页面走，把屏幕还给内容 */
   .band { position: static; }
-  .nbar { display: none; }
+
+  /* 公告：桌面通栏条在移动端变成单行卡片 */
+  .nbar { display: block; margin: 12px 14px 0; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .nbar-in { height: 44px; padding: 0 12px; gap: 8px; }
+  .nbar-panel { padding: 4px 12px 8px; }
+
+  /* 查询区收起态：一行摘要 + 修改 */
+  .band.collapsed .q-full { display: none; }
+  .band.collapsed .band-in { padding: 8px 14px; }
   .band-in { padding: 11px 14px; }
 
   .qrow { display: grid; gap: 9px; }
@@ -416,28 +433,31 @@ body { margin: 0; background: #fff; color: var(--ink); }
   .qacts { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
   .qacts .qbtn { width: 100%; }
 
+  /* 查询摘要行（仅收起态显示） */
+  .q-mini { display: none; }
+  .band.collapsed .q-mini {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    border: 0; background: transparent; padding: 0; cursor: pointer;
+    font: inherit; text-align: left;
+  }
+  .q-mini .mini-t {
+    flex: 1; min-width: 0; font-size: 13px; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .q-mini .mini-t i { font-style: normal; color: var(--ink-3); margin: 0 5px; }
+  .q-mini em { flex: 0 0 auto; font-style: normal; font-size: 12.5px; color: var(--green); font-weight: 600; }
+
   .main { padding: 12px 14px 24px; }
   .empty-wrap { padding: 48px 0 24px; }
 
-  .m-notice { display: block; padding: 12px 14px; }
-  .m-notice .ann-panel { width: auto; border: 1px solid var(--line); border-radius: 4px; background: #fff; overflow: hidden; }
-  .m-notice .ann-panel-h { padding: 9px 13px; }
-  .m-notice .ann-panel .ant-collapse-header { padding: 9px 13px !important; }
-  .m-notice .ann-panel .ant-collapse-content-box { padding: 0 13px 11px !important; }
-  .m-notice .ann-item-label b { font-size: 12.5px; }
 
   .sum { padding: 14px; gap: 12px; }
-  .sum .pair { font-size: 14px; letter-spacing: -.01em; }
   .sum .pair .to { display: inline-block; }
-  .sum .st { font-size: 18px; }
-  .sum .st-sub { margin-bottom: 12px; font-size: 11.5px; }
-  .st-row { display: block; }
-  .st-row .nx { display: block; text-align: left; white-space: normal; margin-top: 3px; }
-  .prog { gap: 10px; }
-  .prog .bar { flex: 1 1 auto; max-width: none; }
 
   .sec { padding: 12px 14px 2px; }
   .tl { padding: 0 14px 8px; }
+  .tl-more { width: 100%; margin: 2px 0 10px; }
+  .divider { margin: 0 14px; }
   .batch-chip { margin: 0 14px 4px; }
   .fb-line { margin: 0 14px; padding: 11px 0 13px; }
   .m-qr { margin: 2px 14px 12px; }

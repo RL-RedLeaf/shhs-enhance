@@ -3,7 +3,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { get, post, ApiError } from '../lib/api'
 import { useMeta } from '../lib/meta'
 import type { Announcement, RouteDetail, RouteInfo, Projection, RouteStep } from '../lib/types'
-import { AnnouncementList, NoticeBar, Shell } from '../components/Shell'
+import { NoticeBar, Shell } from '../components/Shell'
 
 const DEMO = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_DEMO === '1'
 
@@ -244,40 +244,41 @@ function ResultCard({ detail, active, nameOf, virtual, onFeedback }: {
   const doneCount = steps.filter((s) => s.done).length
   const total = steps.length
   const current = [...steps].reverse().find((s) => s.done) ?? null
-  const nextStep = steps.find((s) => !s.done) ?? null
   const status = current?.label ?? '还没开始投递'
-  const statusSub = current
-    ? `${current.date || '日期未知'} · ${nameOf(current.school)}`
-    : '第一批寄出后这里会更新'
   const code = ri?.code || rid || '—'
+
+  // 移动端默认只显示到「下一站」，更远的站折起来（桌面端全展开）
+  const isMobile = useIsMobile()
+  const [moreOpen, setMoreOpen] = useState(false)
+  useEffect(() => { setMoreOpen(false) }, [rid])
+  const firstPending = steps.findIndex((s) => !s.done)
+  const visibleCount = firstPending === -1 ? steps.length : firstPending + 1
+  const collapsed = isMobile && !moreOpen && visibleCount < steps.length
+  const shownSteps = collapsed ? steps.slice(0, visibleCount) : steps
+  const hiddenCount = steps.length - visibleCount
 
   return (
     <div className="card">
       <div className="sum">
         <div className="sum-l">
+          <div className="sum-top">
+            <span className="code">{code}</span>
+            {total > 0 && <span className="count"><b>{doneCount}</b>/{total}</span>}
+          </div>
+
           <p className="pair">
             {nameOf(ri?.from ?? '')}
             <span className="to"><i>→</i>{nameOf(ri?.to ?? '')}</span>
           </p>
-          <p className="meta">
-            <b>{code}</b>
-            {batchLabel(proj?.batch) && <> · {batchLabel(proj?.batch)}</>}
-          </p>
 
-          <div className="st-row">
-            <h1 className="st">{status}</h1>
-            {total > 0 && (
-              <span className="nx">下一步 <b>{nextStep ? nextStep.label : '已送达'}</b></span>
-            )}
-          </div>
-          <p className="st-sub">{statusSub}</p>
+          <h1 className="st">{status}</h1>
+          <p className="st-sub">{current ? (current.date || '日期未知') : '第一批寄出后这里会更新'}</p>
 
           {total > 0 && (
             <div className="prog">
               <span className="bar">
                 {steps.map((s, i) => <i key={i} className={s.done ? 'on' : undefined} />)}
               </span>
-              <span className="n"><b>{doneCount}</b>/{total}</span>
             </div>
           )}
         </div>
@@ -296,7 +297,6 @@ function ResultCard({ detail, active, nameOf, virtual, onFeedback }: {
 
       <div className="sec">
         <h2>投递进度</h2>
-        <span className="c">共 {total} 站</span>
         <span className="u">最后更新 {fmtFull(ri?.updatedAt)}</span>
       </div>
 
@@ -307,9 +307,15 @@ function ResultCard({ detail, active, nameOf, virtual, onFeedback }: {
         projections.map((p, i) => (
           <Fragment key={i}>
             {projections.length > 1 && <div className="batch-chip">{batchLabel(p.batch)}</div>}
-            <Timeline steps={p.steps} nameOf={nameOf} />
+            <Timeline steps={collapsed && i === projections.length - 1 ? shownSteps : p.steps} nameOf={nameOf} />
           </Fragment>
         ))
+      )}
+
+      {collapsed && (
+        <button type="button" className="tl-more" onClick={() => setMoreOpen(true)}>
+          还有 <b>{hiddenCount} 站</b> · 展开
+        </button>
       )}
 
       <div className="m-qr">
@@ -349,6 +355,9 @@ export function HomePage() {
 
   const [announcements, setAnnouncements] = useState<Announcement[] | null>(null)
 
+  // 移动端：出结果后把查询区收成一行，把屏幕让给结果
+  const [qOpen, setQOpen] = useState(true)
+
   const [fbOpen, setFbOpen] = useState(false)
   const openFeedback = useCallback(() => setFbOpen(true), [])
 
@@ -368,6 +377,7 @@ export function HomePage() {
       .then((d) => {
         setDetail(d)
         setActive(d.routes?.[0]?.id ?? id)
+        setQOpen(false)
       })
       .catch((e: ApiError) => {
         setDetail(null)
@@ -426,6 +436,7 @@ export function HomePage() {
         )
         setPairVirtual(materialized.length === 0)
         setActive(materialized.length === 1 ? materialized[0].id : null)
+        setQOpen(false)
       })
       .catch((e: ApiError) => {
         setDetail(null)
@@ -440,6 +451,7 @@ export function HomePage() {
     setToDistrict(undefined); setTo(undefined)
     setDetail(null); setActive(null)
     setNotFound(false); setPairResults(null); setPairVirtual(false)
+    setQOpen(true)
     if (location.search) history.replaceState(null, '', location.pathname)
   }
 
@@ -483,17 +495,13 @@ export function HomePage() {
       demo={DEMO}
       onFeedback={openFeedback}
     >
-      {/* 公告：桌面端通栏条，移动端为页面第一个卡片；两者都在查询带之前 */}
+      {/* 公告：桌面为通栏条，移动端同一组件加边框变成单行卡片 */}
       <NoticeBar items={annList} />
-      {annList.length > 0 && (
-        <div className="m-notice">
-          <AnnouncementList items={annList} defaultOpen={false} />
-        </div>
-      )}
 
       {/* 查询带 */}
-      <div className="band">
+      <div className={'band' + (isMobile && !qOpen ? ' collapsed' : '')}>
         <div className="wrap band-in">
+          <div className="q-full">
           <div className="qrow">
             <div className="qgrp">
               <span className="gl">寄件</span>
@@ -546,6 +554,14 @@ export function HomePage() {
           </div>
 
           {hintText && <div className="q-hint">{hintText}</div>}
+          </div>
+
+          <button type="button" className="q-mini" onClick={() => setQOpen(true)}>
+            <span className="mini-t">
+              {nameOf(from ?? '')}<i>→</i>{nameOf(to ?? '')}
+            </span>
+            <em>修改</em>
+          </button>
         </div>
       </div>
 
