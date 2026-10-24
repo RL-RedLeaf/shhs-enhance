@@ -268,7 +268,7 @@ body { margin: 0; background: #fff; color: var(--ink); }
   display: flex; align-items: center; gap: 6px; min-width: 0;
   font-size: 13px; color: var(--ink);
 }
-.nbar-t b { flex: 0 0 auto; font-weight: 500; color: var(--green); }
+.nbar-t b { flex: 0 0 auto; font-weight: 700; color: var(--green); }
 .nbar-t span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nbar-d {
   margin-left: auto; flex: 0 0 auto; font-size: 11.5px; color: var(--ink-3);
