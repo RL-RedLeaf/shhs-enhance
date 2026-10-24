@@ -14,7 +14,13 @@ function AppPublic() {
   }, [])
 
   if (path !== '/' && path !== '/workbench') {
-    return <Shell><p style={{ color: 'var(--muted)' }}>404</p></Shell>
+    return (
+      <Shell>
+        <main className="wrap" style={{ padding: '64px 0', flex: 1 }}>
+          <p style={{ color: 'var(--muted)' }}>页面不存在</p>
+        </main>
+      </Shell>
+    )
   }
   if (path === '/') return <HomePage />
   return <WorkbenchGate />
@@ -35,21 +41,33 @@ function WorkbenchGate() {
   }, [])
 
   if (err) {
-    return <Shell headerNote="SHHS Post">
-      <p style={{ color: 'var(--muted)' }}>登录状态获取失败（{err.code}）</p>
-    </Shell>
+    return (
+      <Shell headerNote="SHHS Post">
+        <main className="wrap" style={{ padding: '48px 0', flex: 1 }}>
+          <p style={{ color: 'var(--muted)' }}>登录状态获取失败（{err.code}）</p>
+        </main>
+      </Shell>
+    )
   }
   if (acc === undefined) {
-    return <Shell headerNote="SHHS Post"><p style={{ color: 'var(--muted)', padding: '48px 0', textAlign: 'center' }}>…</p></Shell>
+    return (
+      <Shell headerNote="SHHS Post">
+        <main className="wrap" style={{ padding: '48px 0', flex: 1, textAlign: 'center' }}>
+          <p style={{ color: 'var(--muted)' }}>…</p>
+        </main>
+      </Shell>
+    )
   }
   return (
     <Shell headerNote="SHHS Post">
-      <div className="panel" style={{ maxWidth: 560 }}>
-        <h2 style={{ fontSize: 17, fontWeight: 600, color: 'var(--green)', margin: '0 0 12px' }}>学校工作台</h2>
-        <p style={{ color: 'var(--muted)' }}>
-          工作台界面随下一批次迁移；当前阶段请继续使用原入口。
-        </p>
-      </div>
+      <main className="wrap" style={{ padding: '32px 0', flex: 1 }}>
+        <div className="panel" style={{ maxWidth: 560 }}>
+          <h2 style={{ fontSize: 17, fontWeight: 600, color: 'var(--green)', margin: '0 0 12px' }}>学校工作台</h2>
+          <p style={{ color: 'var(--muted)' }}>
+            工作台界面随下一批次迁移；当前阶段请继续使用原入口。
+          </p>
+        </div>
+      </main>
     </Shell>
   )
 }
