@@ -96,16 +96,18 @@ export function NoticeBar({ items }: { items: Announcement[] }) {
   )
 }
 
-export function SiteHeader({ note, loginLink, onFeedback }: {
+export function SiteHeader({ note, loginLink, onFeedback, demo }: {
   note?: string
   loginLink?: boolean
   onFeedback?: () => void
+  demo?: boolean
 }) {
   return (
     <header className="hd">
       <div className="hd-brand">
         <span className="hd-mark"><EnvelopeIcon /></span>
         <span className="hd-title">上海高中明信片邮路追踪</span>
+        {demo && <span className="hd-demo">模拟页面</span>}
         {note && <span className="hd-cycle">{note}</span>}
       </div>
       <div className="hd-right">
@@ -146,16 +148,17 @@ export function SiteFooter({ progressNote = false, onFeedback }: {
   )
 }
 
-export function Shell({ headerNote, progressNote, loginLink, onFeedback, children }: {
+export function Shell({ headerNote, progressNote, loginLink, onFeedback, demo, children }: {
   headerNote?: string
   progressNote?: boolean
   loginLink?: boolean
   onFeedback?: () => void
+  demo?: boolean
   children: ReactNode
 }) {
   return (
     <div className="page">
-      <SiteHeader note={headerNote} loginLink={loginLink} onFeedback={onFeedback} />
+      <SiteHeader note={headerNote} loginLink={loginLink} onFeedback={onFeedback} demo={demo} />
       {children}
       <SiteFooter progressNote={progressNote} onFeedback={onFeedback} />
     </div>

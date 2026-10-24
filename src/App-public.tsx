@@ -72,9 +72,14 @@ function WorkbenchGate() {
   )
 }
 
+const BASE = ((import.meta as unknown as { env?: Record<string, string> }).env?.BASE_URL || '/').replace(/\/$/, '')
+
+/** 去掉部署子路径（如 GitHub Pages 的 /shhs-enhance）与 index.html 后缀 */
 function normalize(path: string): string {
-  if (path.endsWith('/index.html')) return path.slice(0, path.length - '/index.html'.length) || '/'
-  return path
+  let p = path
+  if (BASE && p.startsWith(BASE)) p = p.slice(BASE.length)
+  if (p.endsWith('/index.html')) p = p.slice(0, p.length - '/index.html'.length)
+  return p || '/'
 }
 
 export { AppPublic }

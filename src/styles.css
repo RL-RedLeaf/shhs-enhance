@@ -365,6 +365,13 @@ body { margin: 0; background: #fff; color: var(--ink); }
 }
 .ft a:hover, .ft-link:hover { color: var(--green); text-decoration: underline; }
 
+/* 演示版标记：仅 VITE_DEMO=1 构建出现，位于标题与「2026 届」之间 */
+.hd-demo {
+  flex: 0 0 auto; font-size: 10.5px; line-height: 1; padding: 3px 6px;
+  border: 1px dashed #d8c9a6; border-radius: 2px; color: #8a6420;
+  white-space: nowrap;
+}
+
 /* ────────────────────────── 响应式 ────────────────────────── */
 
 .hide-sm { display: inline; }

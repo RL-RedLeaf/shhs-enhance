@@ -1,0 +1,69 @@
+name: Deploy demo to GitHub Pages
+
+# 部署的是「纯静态演示版」：接口用 src/lib/fixtures 里的快照数据模拟，
+# 不会、也无法访问线上 API（shhspost.cn 未开放 CORS）。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'login.html'
+      - 'vite.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # base 必须与仓库名一致（https://<user>.github.io/<repo>/）；
+      # 若仓库改名，这里和 README 里的链接要同步改。
+      - name: Build demo
+        run: npx vite build --outDir dist-demo
+        env:
+          VITE_DEMO: '1'
+          VITE_BASE: /shhs-enhance/
+
+      # enablement: 仓库首次部署时自动把 Pages 的 Source 切到 GitHub Actions
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-demo
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

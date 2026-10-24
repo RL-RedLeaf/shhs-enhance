@@ -6,7 +6,9 @@ const entry = (p: string) => fileURLToPath(new URL(p, import.meta.url))
 
 // 双入口 MPA：index.html(/) 与 login.html(/login)。
 // 服务器端现有页面路由表不变：/{,/workbench} 出 index、{,/login,/account,/change-password,/admin/accounts} 出 login。
+// GitHub Pages 部署在子路径下时需要设置 VITE_BASE=/<repo>/
 export default defineConfig({
+  base: process.env.VITE_BASE || '/',
   plugins: [react()],
   build: {
     outDir: 'dist',

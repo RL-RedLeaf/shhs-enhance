@@ -5,6 +5,8 @@ import { useMeta } from '../lib/meta'
 import type { Announcement, RouteDetail, RouteInfo, Projection, RouteStep } from '../lib/types'
 import { AnnouncementList, NoticeBar, Shell } from '../components/Shell'
 
+const DEMO = (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_DEMO === '1'
+
 /* ────────────────────────── 响应式 ────────────────────────── */
 
 /** 与 CSS 的 719px 断点保持一致，用于切换组件行为（不是样式） */
@@ -478,7 +480,8 @@ export function HomePage() {
     <Shell
       headerNote={meta ? `${meta.cycle} 届` : undefined}
       progressNote
-      loginLink
+      loginLink={!DEMO}
+      demo={DEMO}
       onFeedback={openFeedback}
     >
       {/* 公告：桌面端通栏条，移动端为页面第一个卡片；两者都在查询带之前 */}
@@ -595,6 +598,7 @@ export function HomePage() {
       </main>
 
       <FeedbackDrawer open={fbOpen} onClose={() => setFbOpen(false)} />
+
     </Shell>
   )
 }
