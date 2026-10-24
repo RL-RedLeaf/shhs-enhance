@@ -122,19 +122,29 @@ body { margin: 0; background: #fff; color: var(--ink); }
 .sum .k { font-size: 11.5px; color: var(--ink-3); margin: 0 0 3px; }
 .sum .st {
   font-size: 21px; font-weight: 600; line-height: 1.35; color: var(--green);
-  margin: 0 0 3px; padding-left: 11px; border-left: 3px solid var(--red);
-  overflow-wrap: anywhere;
+  margin: 0 0 3px; overflow-wrap: anywhere;
 }
-.sum .st-sub { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; padding-left: 14px; }
+.sum .st-sub { font-size: 12.5px; color: var(--ink-3); margin: 0 0 14px; }
 
-.prog { display: flex; align-items: center; gap: 12px; padding-left: 14px; flex-wrap: wrap; }
-.prog .n { font-family: var(--num); font-size: 15px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.prog .n b { color: var(--red); }
-.prog .bar { display: flex; gap: 3px; flex: 1 1 120px; max-width: 240px; }
-.prog .bar i { flex: 1; height: 6px; background: #e9edea; border-radius: 1px; }
+/* 状态行：大字 + 右侧「下一步」 */
+.st-row { display: flex; align-items: baseline; gap: 16px; }
+.st-row .st { flex: 1 1 auto; min-width: 0; }
+.st-row .nx {
+  flex: 0 0 auto; font-size: 12px; color: var(--ink-3); white-space: nowrap;
+  text-align: right;
+}
+.st-row .nx b { color: var(--ink-2); font-weight: 500; }
+
+/* 进度行：细条在左，2/6 靠右 */
+.prog { display: flex; align-items: center; gap: 12px; }
+.prog .bar { display: flex; gap: 3px; flex: 0 0 300px; max-width: 300px; }
+.prog .bar i { flex: 1; height: 4px; background: #e9edea; border-radius: 1px; }
 .prog .bar i.on { background: var(--green); }
-.prog .nx { font-size: 12px; color: var(--ink-3); }
-.prog .nx b { color: var(--ink-2); font-weight: 500; }
+.prog .n {
+  margin-left: auto; font-family: var(--num); font-size: 12.5px; color: var(--ink-3);
+  white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.prog .n b { color: var(--ink-2); font-weight: 600; }
 
 .qrb { text-align: center; padding-top: 2px; }
 .qrb img { display: block; border: 1px solid var(--line); border-radius: 2px; }
@@ -425,9 +435,10 @@ body { margin: 0; background: #fff; color: var(--ink); }
   .sum .pair .to { display: inline-block; }
   .sum .st { font-size: 18px; }
   .sum .st-sub { margin-bottom: 12px; font-size: 11.5px; }
-  .prog { padding-left: 14px; gap: 8px; }
-  .prog .bar { flex: 0 0 140px; max-width: 140px; }
-  .prog .nx { flex: 1 1 100%; }
+  .st-row { display: block; }
+  .st-row .nx { display: block; text-align: left; white-space: normal; margin-top: 3px; }
+  .prog { gap: 10px; }
+  .prog .bar { flex: 1 1 auto; max-width: none; }
 
   .sec { padding: 12px 14px 2px; }
   .tl { padding: 0 14px 8px; }

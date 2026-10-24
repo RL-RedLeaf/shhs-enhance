@@ -261,24 +261,23 @@ function ResultCard({ detail, active, nameOf, virtual, onFeedback }: {
           </p>
           <p className="meta">
             <b>{code}</b>
-            {rid && <> · {rid}</>}
-            {detail.cycle && <> · {detail.cycle} 届</>}
             {batchLabel(proj?.batch) && <> · {batchLabel(proj?.batch)}</>}
           </p>
 
-          <p className="k">当前状态</p>
-          <h1 className="st">{status}</h1>
+          <div className="st-row">
+            <h1 className="st">{status}</h1>
+            {total > 0 && (
+              <span className="nx">下一步 <b>{nextStep ? nextStep.label : '已送达'}</b></span>
+            )}
+          </div>
           <p className="st-sub">{statusSub}</p>
 
           {total > 0 && (
             <div className="prog">
-              <span className="n"><b>{doneCount}</b>/{total} 站</span>
               <span className="bar">
                 {steps.map((s, i) => <i key={i} className={s.done ? 'on' : undefined} />)}
               </span>
-              <span className="nx">
-                下一站：<b>{nextStep ? nextStep.label : '已送达'}</b>
-              </span>
+              <span className="n"><b>{doneCount}</b>/{total}</span>
             </div>
           )}
         </div>
